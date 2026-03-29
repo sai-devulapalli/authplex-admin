@@ -1,18 +1,18 @@
 export interface Tenant {
-  id: string
-  domain: string
-  issuer: string
-  signing_config: {
-    algorithm: string
-    active_key_id: string
+  ID: string
+  Domain: string
+  Issuer: string
+  SigningConfig: {
+    Algorithm: string
+    ActiveKeyID: string
   }
-  mfa: {
+  MFA: {
     required: string
     methods: string[]
   }
-  created_at: string
-  updated_at: string
-  deleted_at: string | null
+  CreatedAt: string
+  UpdatedAt: string
+  DeletedAt: string | null
 }
 
 export interface Client {

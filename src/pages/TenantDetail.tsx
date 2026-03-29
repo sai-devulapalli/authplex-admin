@@ -40,12 +40,12 @@ export default function TenantDetail() {
       <div className="page-header">
         <div>
           <button className="btn-link" onClick={() => navigate('/tenants')}>&larr; Tenants</button>
-          <h1>{tenant.id}</h1>
+          <h1>{tenant.ID}</h1>
           <div className="tenant-meta">
-            <span>{tenant.domain}</span>
-            <span className="badge">{tenant.signing_config?.algorithm}</span>
-            {tenant.mfa?.required !== 'none' && (
-              <span className="badge badge-info">MFA: {tenant.mfa.required}</span>
+            <span>{tenant.Domain}</span>
+            <span className="badge">{tenant.SigningConfig?.Algorithm}</span>
+            {tenant.MFA?.required !== 'none' && tenant.MFA?.required && (
+              <span className="badge badge-info">MFA: {tenant.MFA.required}</span>
             )}
           </div>
         </div>
@@ -64,10 +64,10 @@ export default function TenantDetail() {
       </div>
 
       <div className="tab-content">
-        {activeTab === 'clients' && <Clients tenantId={tenant.id} />}
-        {activeTab === 'providers' && <Providers tenantId={tenant.id} />}
-        {activeTab === 'roles' && <Roles tenantId={tenant.id} />}
-        {activeTab === 'audit' && <AuditLogs tenantId={tenant.id} />}
+        {activeTab === 'clients' && <Clients tenantId={tenant.ID} />}
+        {activeTab === 'providers' && <Providers tenantId={tenant.ID} />}
+        {activeTab === 'roles' && <Roles tenantId={tenant.ID} />}
+        {activeTab === 'audit' && <AuditLogs tenantId={tenant.ID} />}
       </div>
     </div>
   )

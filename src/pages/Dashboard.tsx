@@ -18,7 +18,7 @@ export default function Dashboard() {
     })
 
     client.health().then((res) => {
-      setServerStatus(res.status === 'UP' ? 'Healthy' : res.status)
+      setServerStatus(res.status === 'up' || res.status === 'UP' ? 'Healthy' : res.status)
     }).catch(() => {
       setServerStatus('Unreachable')
     })

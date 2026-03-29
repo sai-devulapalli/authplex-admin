@@ -54,18 +54,18 @@ export default function Tenants() {
   }
 
   const columns = [
-    { key: 'id', header: 'ID' },
-    { key: 'domain', header: 'Domain' },
-    { key: 'issuer', header: 'Issuer' },
+    { key: 'ID', header: 'ID' },
+    { key: 'Domain', header: 'Domain' },
+    { key: 'Issuer', header: 'Issuer' },
     {
-      key: 'algorithm',
+      key: 'Algorithm',
       header: 'Algorithm',
-      render: (t: Tenant) => t.signing_config?.algorithm || '-',
+      render: (t: Tenant) => t.SigningConfig?.Algorithm || '-',
     },
     {
-      key: 'created_at',
+      key: 'CreatedAt',
       header: 'Created',
-      render: (t: Tenant) => new Date(t.created_at).toLocaleDateString(),
+      render: (t: Tenant) => new Date(t.CreatedAt).toLocaleDateString(),
     },
     {
       key: 'actions',
@@ -73,7 +73,7 @@ export default function Tenants() {
       render: (t: Tenant) => (
         <button
           className="btn btn-sm btn-danger"
-          onClick={(e) => { e.stopPropagation(); handleDelete(t.id) }}
+          onClick={(e) => { e.stopPropagation(); handleDelete(t.ID) }}
         >
           Delete
         </button>
@@ -97,7 +97,7 @@ export default function Tenants() {
       <DataTable
         columns={columns}
         data={tenants}
-        onRowClick={(t) => navigate(`/tenants/${t.id}`)}
+        onRowClick={(t) => navigate(`/tenants/${t.ID}`)}
         emptyMessage="No tenants yet. Create one to get started."
       />
 
