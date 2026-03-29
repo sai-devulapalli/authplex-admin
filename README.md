@@ -58,17 +58,18 @@ authcore-admin/
 │   │   └── AuthContext.tsx     # API key auth context + sessionStorage
 │   ├── components/
 │   │   ├── Layout.tsx          # Sidebar navigation + header + outlet
-│   │   ├── DataTable.tsx       # Generic typed table component
+│   │   ├── DataTable.tsx       # Generic typed table with pagination
 │   │   └── Modal.tsx           # Create/edit modal
 │   ├── pages/
-│   │   ├── Login.tsx           # API key + server URL input
+│   │   ├── Login.tsx           # API key OR admin email/password login
 │   │   ├── Dashboard.tsx       # Tenant count, server health
-│   │   ├── Tenants.tsx         # Tenant list + create/delete
-│   │   ├── TenantDetail.tsx    # Tabs: Clients, Providers, Roles, Audit
-│   │   ├── Clients.tsx         # OAuth client CRUD
+│   │   ├── Tenants.tsx         # Tenant list + create/delete (paginated)
+│   │   ├── TenantDetail.tsx    # Tabs: Users, Clients, Providers, Roles, Audit
+│   │   ├── Users.tsx           # User management (SCIM placeholder)
+│   │   ├── Clients.tsx         # OAuth client CRUD (paginated)
 │   │   ├── Providers.tsx       # Identity provider CRUD
 │   │   ├── Roles.tsx           # RBAC role CRUD with permissions
-│   │   └── AuditLogs.tsx       # Filterable audit log viewer
+│   │   └── AuditLogs.tsx       # Filterable audit log viewer (paginated)
 │   ├── types.ts                # TypeScript interfaces
 │   ├── App.tsx                 # Router + auth guard
 │   ├── main.tsx                # Entry point
@@ -107,9 +108,15 @@ npm run dev
 # → http://localhost:5173
 ```
 
-Open the browser, enter:
-- **Server URL:** `http://localhost:8080` (or wherever AuthCore is running)
-- **API Key:** your admin API key (or any value if `AUTHCORE_ADMIN_API_KEY` is not set)
+Open the browser. Two login modes:
+
+**API Key mode:**
+- Server URL: `http://localhost:8080`
+- API Key: your `AUTHCORE_ADMIN_API_KEY` (or any value in dev mode)
+
+**Admin Login mode** (click "Switch to Admin Login"):
+- Server URL: `http://localhost:8080`
+- Email + Password: admin credentials from `POST /admin/bootstrap`
 
 ### Build
 
@@ -138,20 +145,23 @@ npm run test:e2e:headed
 ## Pages
 
 ### Login
-API key stored in `sessionStorage` — cleared when tab closes.
+Two modes — toggle via "Switch to Admin Login" link:
+- **API Key mode:** enter server URL + API key (stored in `sessionStorage`, cleared on tab close)
+- **Admin Login mode:** enter server URL + email + password. Calls `POST /admin/login`, receives JWT
 
 ### Dashboard
 Shows tenant count, server health status, server URL. Quick action to manage tenants.
 
 ### Tenants
-Full CRUD with create modal (ID, domain, issuer, algorithm RS256/ES256). Click row to open detail view. Delete with confirmation dialog.
+Full CRUD with create modal (ID, domain, issuer, algorithm RS256/ES256). Click row to open detail view. Delete with confirmation dialog. **Paginated** (20 per page).
 
 ### Tenant Detail
-Tabbed view with:
-- **Clients** — OAuth client CRUD (confidential/public, grant types, redirect URIs, scopes). Client secret shown only on creation.
+Tabbed view with 5 tabs:
+- **Users** — User list per tenant (placeholder — requires SCIM backend endpoint `GET /tenants/{tid}/users`)
+- **Clients** — OAuth client CRUD (confidential/public, grant types, redirect URIs, scopes). Client secret shown only on creation. **Paginated** (20 per page).
 - **Providers** — Identity provider setup (Google, GitHub, Microsoft, Apple, OIDC, OAuth2, SAML).
 - **Roles** — RBAC role management with permissions (supports wildcards like `posts:*`).
-- **Audit Logs** — Filterable event log with action, actor, resource type filters and pagination.
+- **Audit Logs** — Filterable event log with action, actor, resource type filters. **Paginated** (25 per page).
 
 ## API Client
 
