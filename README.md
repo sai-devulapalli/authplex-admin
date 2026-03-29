@@ -88,22 +88,27 @@ authcore-admin/
 
 ## Quick Start
 
-### Prerequisites
-
-- Node.js 18+
-- AuthCore server running (see [authCore](https://github.com/sai-devulapalli/authCore))
-
-### Development
+### One Command (Docker)
 
 ```bash
-# Install dependencies
-npm install
+docker-compose up
+# → AuthCore server: http://localhost:8080
+# → Admin UI:        http://localhost:5173
+```
 
-# Start AuthCore server (in another terminal)
+Open http://localhost:5173, enter server URL `http://localhost:8080`, any API key → Connect.
+
+### Manual (Node.js)
+
+**Prerequisites:** Node.js 18+, AuthCore binary built (`cd ../authCore && make build`)
+
+```bash
+# Terminal 1: Start AuthCore server
 cd ../authCore
 AUTHCORE_CORS_ORIGINS=http://localhost:5173 ./bin/authcore
 
-# Start dev server
+# Terminal 2: Start Admin UI
+npm install
 npm run dev
 # → http://localhost:5173
 ```
