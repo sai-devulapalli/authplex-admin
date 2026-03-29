@@ -13,15 +13,19 @@ export default function Tenants() {
   const [showCreate, setShowCreate] = useState(false)
   const [form, setForm] = useState({ id: '', domain: '', issuer: '', algorithm: 'RS256' })
   const [error, setError] = useState('')
+  const [offset, setOffset] = useState(0)
+  const [total, setTotal] = useState(0)
+  const limit = 20
 
-  useEffect(() => { loadTenants() }, [client])
+  useEffect(() => { loadTenants() }, [client, offset])
 
   async function loadTenants() {
     if (!client) return
     setLoading(true)
     try {
-      const res = await client.listTenants()
+      const res = await client.listTenants(offset, limit)
       setTenants(res.tenants || [])
+      setTotal(res.total || 0)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load tenants')
     } finally {
@@ -99,6 +103,10 @@ export default function Tenants() {
         data={tenants}
         onRowClick={(t) => navigate(`/tenants/${t.ID}`)}
         emptyMessage="No tenants yet. Create one to get started."
+        total={total}
+        offset={offset}
+        limit={limit}
+        onPageChange={setOffset}
       />
 
       <Modal title="Create Tenant" isOpen={showCreate} onClose={() => setShowCreate(false)}>

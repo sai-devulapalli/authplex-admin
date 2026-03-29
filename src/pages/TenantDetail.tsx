@@ -6,15 +6,16 @@ import Clients from './Clients'
 import Providers from './Providers'
 import Roles from './Roles'
 import AuditLogs from './AuditLogs'
+import Users from './Users'
 
-type Tab = 'clients' | 'providers' | 'roles' | 'audit'
+type Tab = 'users' | 'clients' | 'providers' | 'roles' | 'audit'
 
 export default function TenantDetail() {
   const { id } = useParams<{ id: string }>()
   const { client } = useAuth()
   const navigate = useNavigate()
   const [tenant, setTenant] = useState<Tenant | null>(null)
-  const [activeTab, setActiveTab] = useState<Tab>('clients')
+  const [activeTab, setActiveTab] = useState<Tab>('users')
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export default function TenantDetail() {
       </div>
 
       <div className="tabs">
-        {(['clients', 'providers', 'roles', 'audit'] as Tab[]).map((tab) => (
+        {(['users', 'clients', 'providers', 'roles', 'audit'] as Tab[]).map((tab) => (
           <button
             key={tab}
             className={`tab ${activeTab === tab ? 'active' : ''}`}
@@ -64,6 +65,7 @@ export default function TenantDetail() {
       </div>
 
       <div className="tab-content">
+        {activeTab === 'users' && <Users tenantId={tenant.ID} />}
         {activeTab === 'clients' && <Clients tenantId={tenant.ID} />}
         {activeTab === 'providers' && <Providers tenantId={tenant.ID} />}
         {activeTab === 'roles' && <Roles tenantId={tenant.ID} />}

@@ -19,6 +19,9 @@ export default function Clients({ tenantId }: { tenantId: string }) {
   const [showCreate, setShowCreate] = useState(false)
   const [createdSecret, setCreatedSecret] = useState('')
   const [error, setError] = useState('')
+  const [offset, setOffset] = useState(0)
+  const [total, setTotal] = useState(0)
+  const limit = 20
   const [form, setForm] = useState({
     client_name: '',
     client_type: 'confidential',
@@ -27,14 +30,15 @@ export default function Clients({ tenantId }: { tenantId: string }) {
     grant_types: ['authorization_code', 'refresh_token'] as string[],
   })
 
-  useEffect(() => { loadClients() }, [client, tenantId])
+  useEffect(() => { loadClients() }, [client, tenantId, offset])
 
   async function loadClients() {
     if (!client) return
     setLoading(true)
     try {
-      const res = await client.listClients(tenantId)
+      const res = await client.listClients(tenantId, offset, limit)
       setClients(res.clients || [])
+      setTotal(res.total || 0)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load clients')
     } finally {
@@ -118,7 +122,15 @@ export default function Clients({ tenantId }: { tenantId: string }) {
         </div>
       )}
 
-      <DataTable columns={columns} data={clients} emptyMessage="No clients configured." />
+      <DataTable
+        columns={columns}
+        data={clients}
+        emptyMessage="No clients configured."
+        total={total}
+        offset={offset}
+        limit={limit}
+        onPageChange={setOffset}
+      />
 
       <Modal title="Create OAuth Client" isOpen={showCreate} onClose={() => setShowCreate(false)}>
         <form onSubmit={handleCreate}>

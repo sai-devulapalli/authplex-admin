@@ -45,6 +45,18 @@ export interface Role {
   permissions: string[]
 }
 
+export interface User {
+  ID: string
+  TenantID: string
+  Email: string
+  Phone: string
+  Name: string
+  EmailVerified: boolean
+  PhoneVerified: boolean
+  Enabled: boolean
+  CreatedAt: string
+}
+
 export interface AuditEvent {
   id: string
   tenant_id: string
