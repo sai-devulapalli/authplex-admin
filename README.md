@@ -108,15 +108,77 @@ npm run dev
 # → http://localhost:5173
 ```
 
-Open the browser. Two login modes:
+### Setting Up Admin Credentials
+
+**Step 1: Start AuthCore with an admin API key**
+
+```bash
+AUTHCORE_ADMIN_API_KEY=my-secret-key \
+AUTHCORE_CORS_ORIGINS=http://localhost:5173 \
+./bin/authcore
+```
+
+**Step 2: Bootstrap the first admin (one-time)**
+
+```bash
+curl -X POST http://localhost:8080/admin/bootstrap \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@example.com",
+    "password": "your-password-here",
+    "bootstrap_key": "my-secret-key"
+  }'
+```
+
+The `bootstrap_key` must match `AUTHCORE_ADMIN_API_KEY`. Creates a `super_admin`. Only works once (when no admins exist).
+
+**Step 3: Login to Admin UI**
+
+Open http://localhost:5173. Two modes:
 
 **API Key mode:**
 - Server URL: `http://localhost:8080`
-- API Key: your `AUTHCORE_ADMIN_API_KEY` (or any value in dev mode)
+- API Key: `my-secret-key`
 
 **Admin Login mode** (click "Switch to Admin Login"):
 - Server URL: `http://localhost:8080`
-- Email + Password: admin credentials from `POST /admin/bootstrap`
+- Email: `admin@example.com`
+- Password: `your-password-here`
+
+### Creating Additional Admins
+
+After bootstrap, a super_admin can create more admins:
+
+```bash
+# Login first to get JWT
+TOKEN=$(curl -s -X POST http://localhost:8080/admin/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@example.com","password":"your-password-here"}' \
+  | jq -r '.data.token')
+
+# Create a readonly admin
+curl -X POST http://localhost:8080/admin/users \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "email": "viewer@example.com",
+    "password": "password123",
+    "role": "readonly"
+  }'
+```
+
+**Available roles:**
+
+| Role | Access |
+|------|--------|
+| `super_admin` | Full access to all tenants and operations |
+| `tenant_admin` | Scoped to specific tenant(s) only |
+| `readonly` | GET-only access to all endpoints |
+| `auditor` | Read access to audit logs only |
+
+### Dev Mode (No API Key)
+
+If `AUTHCORE_ADMIN_API_KEY` is not set, the server skips auth — any value works in the API Key field. For development only.
 
 ### Build
 
