@@ -40,6 +40,9 @@ export interface Client {
   redirect_uris: string[]
   allowed_scopes: string[]
   grant_types: string[]
+  is_agent?: boolean
+  description?: string
+  allowed_endpoints?: string[]
 }
 
 export interface Provider {

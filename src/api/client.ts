@@ -65,6 +65,9 @@ export class AuthCoreClient {
     redirect_uris: string[]
     allowed_scopes: string[]
     grant_types: string[]
+    is_agent?: boolean
+    description?: string
+    allowed_endpoints?: string[]
   }): Promise<Client> {
     return this.request(`/tenants/${tenantId}/clients`, { method: 'POST', body: JSON.stringify(data) })
   }
@@ -79,6 +82,10 @@ export class AuthCoreClient {
 
   async deleteClient(tenantId: string, clientId: string): Promise<void> {
     return this.request(`/tenants/${tenantId}/clients/${clientId}`, { method: 'DELETE' })
+  }
+
+  async generateAPIKey(tenantId: string, clientId: string): Promise<{ api_key: string }> {
+    return this.request(`/tenants/${tenantId}/clients/${clientId}/api-key`, { method: 'POST' })
   }
 
   // Providers

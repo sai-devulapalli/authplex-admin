@@ -22,12 +22,16 @@ export default function Clients({ tenantId }: { tenantId: string }) {
   const [offset, setOffset] = useState(0)
   const [total, setTotal] = useState(0)
   const limit = 20
+  const [generatedApiKey, setGeneratedApiKey] = useState('')
   const [form, setForm] = useState({
     client_name: '',
     client_type: 'confidential',
     redirect_uris: '',
     allowed_scopes: 'openid profile email',
     grant_types: ['authorization_code', 'refresh_token'] as string[],
+    is_agent: false,
+    description: '',
+    allowed_endpoints: '',
   })
 
   useEffect(() => { loadClients() }, [client, tenantId, offset])
@@ -51,18 +55,25 @@ export default function Clients({ tenantId }: { tenantId: string }) {
     if (!client) return
     setError('')
     try {
-      const result = await client.createClient(tenantId, {
+      const payload: Parameters<typeof client.createClient>[1] = {
         client_name: form.client_name,
         client_type: form.client_type,
         redirect_uris: form.redirect_uris.split('\n').map((s) => s.trim()).filter(Boolean),
         allowed_scopes: form.allowed_scopes.split(' ').filter(Boolean),
         grant_types: form.grant_types,
-      })
+      }
+      if (form.is_agent) {
+        payload.is_agent = true
+        if (form.description) payload.description = form.description
+        const endpoints = form.allowed_endpoints.split('\n').map((s) => s.trim()).filter(Boolean)
+        if (endpoints.length > 0) payload.allowed_endpoints = endpoints
+      }
+      const result = await client.createClient(tenantId, payload)
       if (result.client_secret) {
         setCreatedSecret(result.client_secret)
       }
       setShowCreate(false)
-      setForm({ client_name: '', client_type: 'confidential', redirect_uris: '', allowed_scopes: 'openid profile email', grant_types: ['authorization_code', 'refresh_token'] })
+      setForm({ client_name: '', client_type: 'confidential', redirect_uris: '', allowed_scopes: 'openid profile email', grant_types: ['authorization_code', 'refresh_token'], is_agent: false, description: '', allowed_endpoints: '' })
       await loadClients()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to create client')
@@ -88,17 +99,48 @@ export default function Clients({ tenantId }: { tenantId: string }) {
     }))
   }
 
+  function toggleAgent(checked: boolean) {
+    setForm((prev) => ({
+      ...prev,
+      is_agent: checked,
+      ...(checked
+        ? { client_type: 'confidential', grant_types: ['client_credentials'] }
+        : { grant_types: ['authorization_code', 'refresh_token'] }),
+    }))
+  }
+
+  async function handleGenerateApiKey(clientId: string) {
+    if (!client) return
+    try {
+      const res = await client.generateAPIKey(tenantId, clientId)
+      setGeneratedApiKey(res.api_key)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to generate API key')
+    }
+  }
+
   const columns = [
     { key: 'client_id', header: 'Client ID' },
     { key: 'client_name', header: 'Name' },
-    { key: 'client_type', header: 'Type', render: (c: Client) => <span className="badge">{c.client_type}</span> },
+    {
+      key: 'type', header: 'Type',
+      render: (c: Client) => c.is_agent
+        ? <span className="badge" style={{ background: '#7c3aed', color: '#fff' }}>Agent</span>
+        : <span className="badge">App</span>,
+    },
+    { key: 'client_type', header: 'Client Type', render: (c: Client) => <span className="badge">{c.client_type}</span> },
     { key: 'grant_types', header: 'Grant Types', render: (c: Client) => c.grant_types?.join(', ') || '-' },
     {
       key: 'actions', header: '',
       render: (c: Client) => (
-        <button className="btn btn-sm btn-danger" onClick={(e) => { e.stopPropagation(); handleDelete(c.client_id) }}>
-          Delete
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button className="btn btn-sm" onClick={(e) => { e.stopPropagation(); handleGenerateApiKey(c.client_id) }}>
+            Generate API Key
+          </button>
+          <button className="btn btn-sm btn-danger" onClick={(e) => { e.stopPropagation(); handleDelete(c.client_id) }}>
+            Delete
+          </button>
+        </div>
       ),
     },
   ]
@@ -122,6 +164,15 @@ export default function Clients({ tenantId }: { tenantId: string }) {
         </div>
       )}
 
+      {generatedApiKey && (
+        <div className="alert alert-warning">
+          <strong>API Key (save this key — it's shown only once):</strong>
+          <code>{generatedApiKey}</code>
+          <button className="btn btn-sm" onClick={() => { navigator.clipboard.writeText(generatedApiKey) }}>Copy</button>
+          <button className="btn btn-sm" onClick={() => setGeneratedApiKey('')}>Dismiss</button>
+        </div>
+      )}
+
       <DataTable
         columns={columns}
         data={clients}
@@ -139,8 +190,20 @@ export default function Clients({ tenantId }: { tenantId: string }) {
             <input value={form.client_name} onChange={(e) => setForm({ ...form, client_name: e.target.value })} required />
           </div>
           <div className="form-group">
+            <label className="checkbox-label">
+              <input type="checkbox" checked={form.is_agent} onChange={(e) => toggleAgent(e.target.checked)} />
+              This is an AI agent / service account
+            </label>
+          </div>
+          {form.is_agent && (
+            <div className="form-group">
+              <label>Description (what this agent does)</label>
+              <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="e.g. Automated billing reconciliation agent" />
+            </div>
+          )}
+          <div className="form-group">
             <label>Client Type</label>
-            <select value={form.client_type} onChange={(e) => setForm({ ...form, client_type: e.target.value })}>
+            <select value={form.client_type} onChange={(e) => setForm({ ...form, client_type: e.target.value })} disabled={form.is_agent}>
               <option value="confidential">Confidential (server-side)</option>
               <option value="public">Public (SPA/mobile)</option>
             </select>
@@ -164,6 +227,12 @@ export default function Clients({ tenantId }: { tenantId: string }) {
               ))}
             </div>
           </div>
+          {form.is_agent && (
+            <div className="form-group">
+              <label>Allowed Endpoints (one per line)</label>
+              <textarea value={form.allowed_endpoints} onChange={(e) => setForm({ ...form, allowed_endpoints: e.target.value })} rows={3} placeholder={"/api/billing\n/api/reports"} />
+            </div>
+          )}
           <button type="submit" className="btn btn-primary">Create</button>
         </form>
       </Modal>
