@@ -46,7 +46,7 @@ export class AuthCoreClient {
     return this.request('/tenants', { method: 'POST', body: JSON.stringify(data) })
   }
 
-  async updateTenant(id: string, data: Partial<{ domain: string; issuer: string }>): Promise<Tenant> {
+  async updateTenant(id: string, data: Record<string, unknown>): Promise<Tenant> {
     return this.request(`/tenants/${id}`, { method: 'PUT', body: JSON.stringify(data) })
   }
 

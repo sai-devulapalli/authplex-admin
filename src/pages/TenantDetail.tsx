@@ -7,8 +7,9 @@ import Providers from './Providers'
 import Roles from './Roles'
 import AuditLogs from './AuditLogs'
 import Users from './Users'
+import TenantSettings from './TenantSettings'
 
-type Tab = 'users' | 'clients' | 'providers' | 'roles' | 'audit'
+type Tab = 'users' | 'clients' | 'providers' | 'roles' | 'audit' | 'settings'
 
 export default function TenantDetail() {
   const { id } = useParams<{ id: string }>()
@@ -53,7 +54,7 @@ export default function TenantDetail() {
       </div>
 
       <div className="tabs">
-        {(['users', 'clients', 'providers', 'roles', 'audit'] as Tab[]).map((tab) => (
+        {(['users', 'clients', 'providers', 'roles', 'audit', 'settings'] as Tab[]).map((tab) => (
           <button
             key={tab}
             className={`tab ${activeTab === tab ? 'active' : ''}`}
@@ -70,6 +71,7 @@ export default function TenantDetail() {
         {activeTab === 'providers' && <Providers tenantId={tenant.ID} />}
         {activeTab === 'roles' && <Roles tenantId={tenant.ID} />}
         {activeTab === 'audit' && <AuditLogs tenantId={tenant.ID} />}
+        {activeTab === 'settings' && <TenantSettings tenantId={tenant.ID} />}
       </div>
     </div>
   )

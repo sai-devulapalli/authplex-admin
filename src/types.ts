@@ -10,6 +10,18 @@ export interface Tenant {
     required: string
     methods: string[]
   }
+  Settings?: {
+    session_ttl?: number
+    access_token_ttl?: number
+    refresh_token_ttl?: number
+    password_min_length?: number
+    password_require_uppercase?: boolean
+    password_require_number?: boolean
+    password_require_special?: boolean
+    max_login_attempts?: number
+    lockout_duration?: number
+    allowed_origins?: string[]
+  }
   CreatedAt: string
   UpdatedAt: string
   DeletedAt: string | null
