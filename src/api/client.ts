@@ -1,4 +1,4 @@
-import type { Tenant, Client, Provider, Role, AuditEvent, User, ApiError } from '../types'
+import type { Tenant, Client, Provider, Role, AuditEvent, User, Webhook, ApiError } from '../types'
 
 export class AuthCoreClient {
   private baseUrl: string
@@ -163,6 +163,19 @@ export class AuthCoreClient {
     qs.set('limit', String(params.limit ?? 50))
     qs.set('offset', String(params.offset ?? 0))
     return this.request(`/tenants/${tenantId}/audit?${qs}`)
+  }
+
+  // Webhooks
+  async listWebhooks(tenantId: string): Promise<{ webhooks: Webhook[]; count: number }> {
+    return this.request(`/tenants/${tenantId}/webhooks`)
+  }
+
+  async createWebhook(tenantId: string, data: { url: string; events: string[] }): Promise<Webhook> {
+    return this.request(`/tenants/${tenantId}/webhooks`, { method: 'POST', body: JSON.stringify(data) })
+  }
+
+  async deleteWebhook(tenantId: string, webhookId: string): Promise<void> {
+    return this.request(`/tenants/${tenantId}/webhooks/${webhookId}`, { method: 'DELETE' })
   }
 
   // Health

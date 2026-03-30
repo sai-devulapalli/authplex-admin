@@ -21,6 +21,11 @@ export interface Tenant {
     max_login_attempts?: number
     lockout_duration?: number
     allowed_origins?: string[]
+    smtp_host?: string
+    smtp_port?: number
+    smtp_username?: string
+    smtp_password?: string
+    smtp_from?: string
   }
   CreatedAt: string
   UpdatedAt: string
@@ -88,6 +93,16 @@ export interface PaginatedResponse<T> {
   total: number
   offset: number
   limit: number
+}
+
+export interface Webhook {
+  ID: string
+  TenantID: string
+  URL: string
+  Secret: string
+  Events: string[]
+  Enabled: boolean
+  CreatedAt: string
 }
 
 export interface ApiError {

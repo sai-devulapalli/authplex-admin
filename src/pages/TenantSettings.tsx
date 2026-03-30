@@ -28,6 +28,13 @@ export default function TenantSettings({ tenantId }: TenantSettingsProps) {
   const [lockoutDuration, setLockoutDuration] = useState(0)
   const [allowedOrigins, setAllowedOrigins] = useState('')
 
+  // SMTP
+  const [smtpHost, setSmtpHost] = useState('')
+  const [smtpPort, setSmtpPort] = useState(587)
+  const [smtpUsername, setSmtpUsername] = useState('')
+  const [smtpPassword, setSmtpPassword] = useState('')
+  const [smtpFrom, setSmtpFrom] = useState('')
+
   // UI state
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -58,6 +65,11 @@ export default function TenantSettings({ tenantId }: TenantSettingsProps) {
           setMaxLoginAttempts(s.max_login_attempts ?? 0)
           setLockoutDuration(s.lockout_duration ?? 0)
           setAllowedOrigins((s.allowed_origins || []).join('\n'))
+          setSmtpHost(s.smtp_host ?? '')
+          setSmtpPort(s.smtp_port ?? 587)
+          setSmtpUsername(s.smtp_username ?? '')
+          setSmtpPassword(s.smtp_password ?? '')
+          setSmtpFrom(s.smtp_from ?? '')
         }
       })
       .catch((e) => {
@@ -102,6 +114,11 @@ export default function TenantSettings({ tenantId }: TenantSettingsProps) {
           max_login_attempts: maxLoginAttempts,
           lockout_duration: lockoutDuration,
           allowed_origins: origins,
+          smtp_host: smtpHost,
+          smtp_port: smtpPort,
+          smtp_username: smtpUsername,
+          smtp_password: smtpPassword,
+          smtp_from: smtpFrom,
         },
       })
       setSuccess('Settings saved successfully.')
@@ -253,6 +270,56 @@ export default function TenantSettings({ tenantId }: TenantSettingsProps) {
             value={allowedOrigins}
             onChange={(e) => setAllowedOrigins(e.target.value)}
             placeholder={"https://example.com\nhttps://app.example.com"}
+          />
+        </div>
+      </div>
+
+      {/* Email (SMTP) */}
+      <div className="settings-section">
+        <h3>Email (SMTP)</h3>
+        <p className="hint">Per-tenant SMTP override. Leave empty to use global config.</p>
+        <div className="form-group">
+          <label>SMTP Host</label>
+          <input
+            type="text"
+            value={smtpHost}
+            onChange={(e) => setSmtpHost(e.target.value)}
+            placeholder="smtp.example.com"
+          />
+        </div>
+        <div className="form-group">
+          <label>SMTP Port</label>
+          <input
+            type="number"
+            min={0}
+            value={smtpPort}
+            onChange={(e) => setSmtpPort(Number(e.target.value))}
+          />
+        </div>
+        <div className="form-group">
+          <label>SMTP Username</label>
+          <input
+            type="text"
+            value={smtpUsername}
+            onChange={(e) => setSmtpUsername(e.target.value)}
+            placeholder="user@example.com"
+          />
+        </div>
+        <div className="form-group">
+          <label>SMTP Password</label>
+          <input
+            type="password"
+            value={smtpPassword}
+            onChange={(e) => setSmtpPassword(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label>From Address</label>
+          <input
+            type="text"
+            value={smtpFrom}
+            onChange={(e) => setSmtpFrom(e.target.value)}
+            placeholder="noreply@example.com"
           />
         </div>
       </div>
