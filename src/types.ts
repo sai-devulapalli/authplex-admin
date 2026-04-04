@@ -66,29 +66,27 @@ export interface Role {
 }
 
 export interface User {
-  ID: string
-  TenantID: string
-  Email: string
-  Phone: string
-  Name: string
-  EmailVerified: boolean
-  PhoneVerified: boolean
-  Enabled: boolean
-  CreatedAt: string
+  id: string
+  email: string
+  name: string
+  phone?: string
+  email_verified: boolean
+  enabled: boolean
+  created_at: string
 }
 
 export interface AuditEvent {
-  id: string
-  tenant_id: string
-  actor_id: string
-  actor_type: string
-  action: string
-  resource_type: string
-  resource_id: string
-  ip_address: string
-  user_agent: string
-  details: Record<string, unknown>
-  timestamp: string
+  ID: string
+  TenantID: string
+  ActorID: string
+  ActorType: string
+  Action: string
+  ResourceType: string
+  ResourceID: string
+  IPAddress: string
+  UserAgent: string
+  Details: Record<string, unknown> | null
+  Timestamp: string
 }
 
 export interface PaginatedResponse<T> {

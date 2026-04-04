@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test'
-import { login, AUTHCORE_URL } from './helpers'
+import { login, AUTHPLEX_URL } from './helpers'
 
 const TENANT_ID = 'detail-tenant'
 
 test.describe('Tenant Detail', () => {
   test.beforeEach(async ({ page }) => {
     // Create tenant via API
-    await fetch(`${AUTHCORE_URL}/tenants`, {
+    await fetch(`${AUTHPLEX_URL}/tenants`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: TENANT_ID, domain: 'detail.example.com', issuer: 'https://detail.example.com', algorithm: 'RS256' }),
@@ -29,9 +29,8 @@ test.describe('Tenant Detail', () => {
     await expect(page.locator('.tab:has-text("Audit")')).toBeVisible()
   })
 
-  test('Clients tab is active by default', async ({ page }) => {
-    await expect(page.locator('.tab.active')).toContainText('Clients')
-    await expect(page.locator('.content h2')).toContainText('OAuth Clients')
+  test('Users tab is active by default', async ({ page }) => {
+    await expect(page.locator('.tab.active')).toContainText('Users')
   })
 
   test('switch between tabs', async ({ page }) => {
@@ -57,6 +56,7 @@ test.describe('Tenant Detail', () => {
   // --- Clients Tab ---
 
   test('create client and see secret warning', async ({ page }) => {
+    await page.click('.tab:has-text("Clients")')
     await page.click('text=Create Client')
     await expect(page.locator('.modal h2')).toContainText('Create OAuth Client')
 
@@ -70,7 +70,7 @@ test.describe('Tenant Detail', () => {
 
   test('delete client', async ({ page }) => {
     // Create via API
-    const resp = await fetch(`${AUTHCORE_URL}/tenants/${TENANT_ID}/clients`, {
+    const resp = await fetch(`${AUTHPLEX_URL}/tenants/${TENANT_ID}/clients`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -85,6 +85,7 @@ test.describe('Tenant Detail', () => {
     expect(data.data.client_id).toBeTruthy()
 
     await page.reload()
+    await page.click('.tab:has-text("Clients")')
     await expect(page.locator('text=Delete Me')).toBeVisible()
 
     page.on('dialog', (d) => d.accept())
@@ -119,7 +120,7 @@ test.describe('Tenant Detail', () => {
 
   test('delete role', async ({ page }) => {
     // Create via API
-    await fetch(`${AUTHCORE_URL}/tenants/${TENANT_ID}/roles`, {
+    await fetch(`${AUTHPLEX_URL}/tenants/${TENANT_ID}/roles`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: 'temp-role', permissions: ['*'] }),

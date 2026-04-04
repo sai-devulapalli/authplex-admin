@@ -1,8 +1,8 @@
-# AuthCore Admin UI
+# AuthPlex Admin UI
 
-Admin dashboard for [AuthCore](https://github.com/sai-devulapalli/authCore) — a headless Identity & Access Management engine.
+Admin dashboard for [AuthPlex](https://github.com/sai-devulapalli/authPlex) — a headless Identity & Access Management engine.
 
-React + Vite + TypeScript. Consumes the AuthCore management API.
+React + Vite + TypeScript. Consumes the AuthPlex management API.
 
 ## Architecture
 
@@ -30,7 +30,7 @@ React + Vite + TypeScript. Consumes the AuthCore management API.
                             │ HTTP/JSON
                             ▼
 ┌──────────────────────────────────────────────────────────────────┐
-│                    AuthCore Server (Go)                            │
+│                    AuthPlex Server (Go)                            │
 │                                                                   │
 │  Management API (30+ endpoints, API key or JWT auth)              │
 │                                                                   │
@@ -50,10 +50,10 @@ React + Vite + TypeScript. Consumes the AuthCore management API.
 ## Project Structure
 
 ```
-authcore-admin/
+authplex-admin/
 ├── src/
 │   ├── api/
-│   │   └── client.ts          # Typed API client (AuthCoreClient class)
+│   │   └── client.ts          # Typed API client (AuthPlexClient class)
 │   ├── context/
 │   │   └── AuthContext.tsx     # API key auth context + sessionStorage
 │   ├── components/
@@ -92,7 +92,7 @@ authcore-admin/
 
 ```bash
 docker-compose up
-# → AuthCore server: http://localhost:8080
+# → AuthPlex server: http://localhost:8080
 # → Admin UI:        http://localhost:5173
 ```
 
@@ -100,12 +100,12 @@ Open http://localhost:5173, enter server URL `http://localhost:8080`, any API ke
 
 ### Manual (Node.js)
 
-**Prerequisites:** Node.js 18+, AuthCore binary built (`cd ../authCore && make build`)
+**Prerequisites:** Node.js 18+, AuthPlex binary built (`cd ../authPlex && make build`)
 
 ```bash
-# Terminal 1: Start AuthCore server
-cd ../authCore
-AUTHCORE_CORS_ORIGINS=http://localhost:5173 ./bin/authcore
+# Terminal 1: Start AuthPlex server
+cd ../authPlex
+AUTHPLEX_CORS_ORIGINS=http://localhost:5173 ./bin/authplex
 
 # Terminal 2: Start Admin UI
 npm install
@@ -115,12 +115,12 @@ npm run dev
 
 ### Setting Up Admin Credentials
 
-**Step 1: Start AuthCore with an admin API key**
+**Step 1: Start AuthPlex with an admin API key**
 
 ```bash
-AUTHCORE_ADMIN_API_KEY=my-secret-key \
-AUTHCORE_CORS_ORIGINS=http://localhost:5173 \
-./bin/authcore
+AUTHPLEX_ADMIN_API_KEY=my-secret-key \
+AUTHPLEX_CORS_ORIGINS=http://localhost:5173 \
+./bin/authplex
 ```
 
 **Step 2: Bootstrap the first admin (one-time)**
@@ -135,7 +135,7 @@ curl -X POST http://localhost:8080/admin/bootstrap \
   }'
 ```
 
-The `bootstrap_key` must match `AUTHCORE_ADMIN_API_KEY`. Creates a `super_admin`. Only works once (when no admins exist).
+The `bootstrap_key` must match `AUTHPLEX_ADMIN_API_KEY`. Creates a `super_admin`. Only works once (when no admins exist).
 
 **Step 3: Login to Admin UI**
 
@@ -183,7 +183,7 @@ curl -X POST http://localhost:8080/admin/users \
 
 ### Dev Mode (No API Key)
 
-If `AUTHCORE_ADMIN_API_KEY` is not set, the server skips auth — any value works in the API Key field. For development only.
+If `AUTHPLEX_ADMIN_API_KEY` is not set, the server skips auth — any value works in the API Key field. For development only.
 
 ### Build
 
@@ -198,8 +198,8 @@ npm run build
 # Install Playwright browsers (first time only)
 npx playwright install chromium
 
-# Start AuthCore server
-AUTHCORE_CORS_ORIGINS=http://localhost:5173 AUTHCORE_HTTP_PORT=9091 ../authCore/bin/authcore &
+# Start AuthPlex server
+AUTHPLEX_CORS_ORIGINS=http://localhost:5173 AUTHPLEX_HTTP_PORT=9091 ../authPlex/bin/authplex &
 
 # Run E2E tests
 npm run test:e2e
@@ -232,10 +232,10 @@ Tabbed view with 5 tabs:
 
 ## API Client
 
-The `AuthCoreClient` class in `src/api/client.ts` provides typed methods for all management operations:
+The `AuthPlexClient` class in `src/api/client.ts` provides typed methods for all management operations:
 
 ```typescript
-const client = new AuthCoreClient('http://localhost:8080', 'your-api-key');
+const client = new AuthPlexClient('http://localhost:8080', 'your-api-key');
 
 // Tenants
 const { tenants, total } = await client.listTenants();
@@ -266,7 +266,7 @@ const { events } = await client.queryAudit('acme', { action: 'login_success', li
 
 ## API Response Format
 
-AuthCore uses `{data: T}` envelope for management endpoints. The Go backend serializes structs with **PascalCase** field names (no JSON tags on domain entities):
+AuthPlex uses `{data: T}` envelope for management endpoints. The Go backend serializes structs with **PascalCase** field names (no JSON tags on domain entities):
 
 ```json
 {
@@ -284,8 +284,8 @@ AuthCore uses `{data: T}` envelope for management endpoints. The Go backend seri
 
 | Repository | Description |
 |-----------|-------------|
-| [authCore](https://github.com/sai-devulapalli/authCore) | AuthCore server (Go) — 268 files, 812 tests, 47 endpoints |
-| [authcore-java-sdk](https://github.com/sai-devulapalli/authcore-java-sdk) | Java SDK |
-| [authcore-dotnet-sdk](https://github.com/sai-devulapalli/authcore-dotnet-sdk) | .NET SDK |
-| [authcore-js](https://github.com/sai-devulapalli/authcore-js) | Node.js SDK |
-| [authcore-python](https://github.com/sai-devulapalli/authcore-python) | Python SDK |
+| [authPlex](https://github.com/sai-devulapalli/authPlex) | AuthPlex server (Go) — 268 files, 812 tests, 47 endpoints |
+| [authplex-java-sdk](https://github.com/sai-devulapalli/authplex-java-sdk) | Java SDK |
+| [authplex-dotnet-sdk](https://github.com/sai-devulapalli/authplex-dotnet-sdk) | .NET SDK |
+| [authplex-js](https://github.com/sai-devulapalli/authplex-js) | Node.js SDK |
+| [authplex-python](https://github.com/sai-devulapalli/authplex-python) | Python SDK |

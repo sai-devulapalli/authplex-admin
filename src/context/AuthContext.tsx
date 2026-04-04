@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
-import { AuthCoreClient } from '../api/client'
+import { AuthPlexClient } from '../api/client'
 
 interface AuthContextType {
-  client: AuthCoreClient | null
+  client: AuthPlexClient | null
   isAuthenticated: boolean
   login: (apiUrl: string, apiKey: string) => void
   logout: () => void
@@ -18,22 +18,22 @@ const AuthContext = createContext<AuthContextType>({
 })
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [client, setClient] = useState<AuthCoreClient | null>(() => {
-    const key = sessionStorage.getItem('authcore_api_key')
-    const url = sessionStorage.getItem('authcore_api_url') || ''
-    if (key) return new AuthCoreClient(url, key)
+  const [client, setClient] = useState<AuthPlexClient | null>(() => {
+    const key = sessionStorage.getItem('authplex_api_key')
+    const url = sessionStorage.getItem('authplex_api_url') || ''
+    if (key) return new AuthPlexClient(url, key)
     return null
   })
 
   const login = useCallback((apiUrl: string, apiKey: string) => {
-    sessionStorage.setItem('authcore_api_key', apiKey)
-    sessionStorage.setItem('authcore_api_url', apiUrl)
-    setClient(new AuthCoreClient(apiUrl, apiKey))
+    sessionStorage.setItem('authplex_api_key', apiKey)
+    sessionStorage.setItem('authplex_api_url', apiUrl)
+    setClient(new AuthPlexClient(apiUrl, apiKey))
   }, [])
 
   const logout = useCallback(() => {
-    sessionStorage.removeItem('authcore_api_key')
-    sessionStorage.removeItem('authcore_api_url')
+    sessionStorage.removeItem('authplex_api_key')
+    sessionStorage.removeItem('authplex_api_url')
     setClient(null)
   }, [])
 
@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated: client !== null,
       login,
       logout,
-      apiUrl: sessionStorage.getItem('authcore_api_url') || '',
+      apiUrl: sessionStorage.getItem('authplex_api_url') || '',
     }}>
       {children}
     </AuthContext.Provider>

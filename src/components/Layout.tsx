@@ -8,7 +8,7 @@ export default function Layout() {
     <div className="layout">
       <aside className="sidebar">
         <div className="sidebar-header">
-          <h1>AuthCore</h1>
+          <h1>AuthPlex</h1>
           <span className="badge">Admin</span>
         </div>
         <nav>

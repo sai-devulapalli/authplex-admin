@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext'
 type LoginMode = 'apikey' | 'admin'
 
 export default function Login() {
-  const [apiUrl, setApiUrl] = useState('http://localhost:8080')
+  const [apiUrl, setApiUrl] = useState('http://localhost:9090')
   const [apiKey, setApiKey] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -59,7 +59,7 @@ export default function Login() {
   return (
     <div className="login-page">
       <div className="login-card">
-        <h1>AuthCore Admin</h1>
+        <h1>AuthPlex Admin</h1>
         <p>
           {mode === 'apikey'
             ? 'Enter your server URL and API key to connect.'

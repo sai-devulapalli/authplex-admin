@@ -1,6 +1,6 @@
 import type { Tenant, Client, Provider, Role, AuditEvent, User, Webhook, ApiError } from '../types'
 
-export class AuthCoreClient {
+export class AuthPlexClient {
   private baseUrl: string
   private apiKey: string
 
@@ -149,10 +149,8 @@ export class AuthCoreClient {
   }
 
   // Users
-  async listUsers(_tenantId: string, _offset = 0, _limit = 50): Promise<{ users: User[]; total: number }> {
-    // AuthCore doesn't have a list users endpoint yet (GET /tenants/{tid}/users).
-    // This is a UI placeholder ready for the backend.
-    return { users: [], total: 0 }
+  async listUsers(tenantId: string, offset = 0, limit = 50): Promise<{ users: User[]; count: number }> {
+    return this.request(`/tenants/${tenantId}/users?offset=${offset}&limit=${limit}`)
   }
 
   // Audit

@@ -1,6 +1,6 @@
 import { type Page, expect } from '@playwright/test'
 
-export const AUTHCORE_URL = 'http://localhost:9091'
+export const AUTHPLEX_URL = 'http://localhost:9091'
 export const API_KEY = 'test-key'
 
 /**
@@ -8,7 +8,7 @@ export const API_KEY = 'test-key'
  */
 export async function login(page: Page) {
   await page.goto('/login')
-  await page.fill('#apiUrl', AUTHCORE_URL)
+  await page.fill('#apiUrl', AUTHPLEX_URL)
   await page.fill('#apiKey', API_KEY)
   await page.click('button[type="submit"]')
   // Should redirect to dashboard
@@ -20,7 +20,7 @@ export async function login(page: Page) {
  * Create a tenant via the API directly (faster than UI for setup).
  */
 export async function createTenantViaAPI(id: string, algorithm = 'RS256') {
-  await fetch(`${AUTHCORE_URL}/tenants`, {
+  await fetch(`${AUTHPLEX_URL}/tenants`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id, domain: `${id}.example.com`, issuer: `https://${id}.example.com`, algorithm }),

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { login, AUTHCORE_URL } from './helpers'
+import { login, AUTHPLEX_URL } from './helpers'
 
 test.describe('Tenants', () => {
   test.beforeEach(async ({ page }) => {
@@ -48,7 +48,7 @@ test.describe('Tenants', () => {
 
   test('click tenant row navigates to detail', async ({ page }) => {
     // Create a tenant first via API
-    await fetch(`${AUTHCORE_URL}/tenants`, {
+    await fetch(`${AUTHPLEX_URL}/tenants`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: 'nav-tenant', domain: 'nav.example.com', issuer: 'https://nav.example.com', algorithm: 'RS256' }),
@@ -62,7 +62,7 @@ test.describe('Tenants', () => {
 
   test('delete tenant', async ({ page }) => {
     // Create via API
-    await fetch(`${AUTHCORE_URL}/tenants`, {
+    await fetch(`${AUTHPLEX_URL}/tenants`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: 'delete-me', domain: 'del.example.com', issuer: 'https://del.example.com', algorithm: 'RS256' }),

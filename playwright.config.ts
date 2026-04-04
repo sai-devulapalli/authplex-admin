@@ -15,7 +15,7 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: 'AUTHCORE_CORS_ORIGINS=http://localhost:5173 AUTHCORE_HTTP_PORT=9091 ../authCore/bin/authcore',
+      command: 'AUTHPLEX_CORS_ORIGINS=http://localhost:5173 AUTHPLEX_HTTP_PORT=9091 ../authPlex/bin/authplex',
       port: 9091,
       timeout: 15000,
       reuseExistingServer: true,

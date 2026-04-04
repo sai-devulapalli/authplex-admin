@@ -36,15 +36,15 @@ export default function AuditLogs({ tenantId }: { tenantId: string }) {
 
   const columns = [
     {
-      key: 'timestamp', header: 'Time',
-      render: (e: AuditEvent) => new Date(e.timestamp).toLocaleString(),
+      key: 'Timestamp', header: 'Time',
+      render: (e: AuditEvent) => new Date(e.Timestamp).toLocaleString(),
     },
-    { key: 'action', header: 'Action', render: (e: AuditEvent) => <span className="badge">{e.action}</span> },
-    { key: 'actor_id', header: 'Actor' },
-    { key: 'actor_type', header: 'Actor Type' },
-    { key: 'resource_type', header: 'Resource' },
-    { key: 'resource_id', header: 'Resource ID' },
-    { key: 'ip_address', header: 'IP' },
+    { key: 'Action', header: 'Action', render: (e: AuditEvent) => <span className="badge">{e.Action}</span> },
+    { key: 'ActorID', header: 'Actor' },
+    { key: 'ActorType', header: 'Actor Type' },
+    { key: 'ResourceType', header: 'Resource' },
+    { key: 'ResourceID', header: 'Resource ID' },
+    { key: 'IPAddress', header: 'IP' },
   ]
 
   return (

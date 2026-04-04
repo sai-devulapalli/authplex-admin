@@ -21,7 +21,8 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
   background: var(--bg);
   color: var(--text);
   font-size: 14px;
@@ -162,7 +163,11 @@ h2 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
 }
 .badge-info { background: var(--info-bg); color: #0a6fac; }
 
-.tag { display: inline-block; padding: 2px 6px; background: #eef1f5; border-radius: 3px; font-size: 12px; font-family: monospace; margin: 1px 2px; }
+.tag { display: inline-block; padding: 2px 8px; background: #eef1f5; border-radius: 4px; font-size: 12px; font-family: monospace; margin: 1px 2px; }
+.tag-green { background: #dcfce7; color: #15803d; }
+.tag-yellow { background: #fef9c3; color: #a16207; }
+.tag-red { background: #fee2e2; color: #b91c1c; }
+.tag-blue { background: #dbeafe; color: #1e40af; }
 .tag-list { display: flex; flex-wrap: wrap; gap: 2px; }
 
 /* Page Header */
