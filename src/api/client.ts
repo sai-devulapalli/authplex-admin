@@ -153,6 +153,22 @@ export class AuthPlexClient {
     return this.request(`/tenants/${tenantId}/users?offset=${offset}&limit=${limit}`)
   }
 
+  async createUser(tenantId: string, data: { email: string; password: string; name: string; phone?: string }): Promise<{ user_id: string; email: string }> {
+    return this.request('/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'X-Tenant-ID': tenantId },
+    })
+  }
+
+  async updateUser(tenantId: string, userId: string, data: { name: string; phone: string; enabled: boolean }): Promise<User> {
+    return this.request(`/tenants/${tenantId}/users/${userId}`, { method: 'PUT', body: JSON.stringify(data) })
+  }
+
+  async purgeUser(tenantId: string, userId: string): Promise<void> {
+    return this.request(`/tenants/${tenantId}/users/${userId}/purge`, { method: 'DELETE' })
+  }
+
   // Audit
   async queryAudit(tenantId: string, params: {
     action?: string

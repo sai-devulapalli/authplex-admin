@@ -244,9 +244,12 @@ h2 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 }
 .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); }
-.modal-header h2 { margin: 0; font-size: 16px; }
+.modal-header h2, .modal-header h3 { margin: 0; font-size: 16px; }
 .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-muted); line-height: 1; }
 .modal-body { padding: 20px; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--border); }
+.form-control { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--input-bg, var(--card-bg)); color: var(--text); font-size: 14px; box-sizing: border-box; }
+.form-control:focus { outline: none; border-color: var(--primary); }
 
 /* Login Page */
 .login-page { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--sidebar-bg); }
